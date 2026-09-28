@@ -1,7 +1,7 @@
 /* ===================================================
    1. Audio Controller & Overlay Logic (Autoplay Trigger)
    =================================================== */
-const music = new Audio('music.mp3');
+const music = new Audio('audio.mp3');
 music.loop = true;
 
 function showToast(msg) {

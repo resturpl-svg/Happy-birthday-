@@ -13,6 +13,7 @@ function showToast(msg) {
     }
 }
 
+
 function updateAudioUI(state) {
     const headerLabels = document.querySelectorAll('.headerAudioLabel');
     const headerIcons = document.querySelectorAll('.headerAudioIcon');

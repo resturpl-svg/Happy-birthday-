@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Birthday Bestie</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -180,7 +184,7 @@
     <div id="toastMessage" class="fixed top-20 right-6 z-50 bg-stone-900/95 border border-amber-700/80 text-amber-100 px-4 py-3 rounded-xl shadow-2xl text-xs hidden transition"></div>
 
     <script>
-        // Otomatis mendeteksi file 'music.mp3' maupun 'audio.mp3'
+        // MENGGUNAKAN FILE audio.mp3
         let music = new Audio('audio.mp3'); 
         music.loop = true;
 
@@ -208,17 +212,19 @@
         function openEnvelope() {
             document.getElementById('welcomeOverlay').classList.add('hidden');
             
+            // Mencoba memutar file audio.mp3
             music.play().then(() => {
                 updateAudioUI(true);
                 showToast('🎶 Musik diputar...');
             }).catch(err => {
-                // Fallback jika nama file di GitHub adalah audio.mp3
-                music.src = 'audio.mp3';
+                console.warn("Fallback check audio...");
+                // Jika tidak ketemu audio.mp3, coba fallback ke music.mp3
+                music.src = 'music.mp3';
                 music.play().then(() => {
                     updateAudioUI(true);
                     showToast('🎶 Musik diputar...');
                 }).catch(() => {
-                    showToast('⚠️ Pastikan file lagu bernama music.mp3 atau audio.mp3!');
+                    showToast('⚠️ File audio.mp3 / music.mp3 tidak ditemukan!');
                 });
             });
 
@@ -230,7 +236,7 @@
                 music.play().then(() => {
                     updateAudioUI(true);
                     showToast('🎶 Musik diputar...');
-                }).catch(() => showToast('⚠️ File musik tidak ditemukan!'));
+                }).catch(() => showToast('⚠️ File audio.mp3 tidak ditemukan!'));
             } else {
                 music.pause();
                 updateAudioUI(false);

@@ -1,9 +1,10 @@
 /* ===================================================
-   1. Audio Controller & UI Synchronizer (Enhanced Error Handling)
+   1. Audio Controller dengan Autoplay On First Click
    =================================================== */
-const music = document.getElementById('bgMusic');
+const music = new Audio('audio.mp3');
+music.loop = true;
+let isAudioInitialized = false;
 
-// Menampilkan pesan notifikasi toast singkat
 function showToast(msg) {
     const toast = document.getElementById('toastMessage');
     if (toast) {
@@ -13,7 +14,6 @@ function showToast(msg) {
     }
 }
 
-// Mengubah tampilan tombol header sesuai status audio
 function updateAudioUI(state) {
     const headerLabels = document.querySelectorAll('.headerAudioLabel');
     const headerIcons = document.querySelectorAll('.headerAudioIcon');
@@ -33,7 +33,7 @@ function updateAudioUI(state) {
             el.innerText = 'LOAD';
             el.className = 'headerTogglePill font-bold text-[10px] uppercase px-2 py-0.5 rounded-full bg-amber-950/80 text-amber-300 border border-amber-800/80';
         });
-    } else { // 'paused' / 'off'
+    } else {
         headerLabels.forEach(el => el.innerText = 'Putar Musik');
         headerIcons.forEach(el => el.className = 'headerAudioIcon fa-solid fa-power-off text-rose-500 text-xs');
         headerPills.forEach(el => {
@@ -43,36 +43,21 @@ function updateAudioUI(state) {
     }
 }
 
-// Fungsi kontrol audio utama dengan validasi dan pesan error mendetail
-function toggleAudio() {
-    if (!music) {
-        showToast('⚠️ Elemen audio tidak ditemukan di HTML!');
-        return;
-    }
+function playMusic() {
+    updateAudioUI('loading');
+    music.play().then(() => {
+        updateAudioUI('playing');
+        isAudioInitialized = true;
+    }).catch(err => {
+        console.warn('Autoplay terhalang browser:', err);
+        updateAudioUI('paused');
+    });
+}
 
+function toggleAudio() {
     if (music.paused) {
-        updateAudioUI('loading');
-        
-        const playPromise = music.play();
-        
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                updateAudioUI('playing');
-                showToast('🎶 Musik sedang diputar...');
-            }).catch(err => {
-                console.error('Audio Play Error:', err);
-                updateAudioUI('paused');
-                
-                // Pengecekan penyebab error spesifik
-                if (err.name === 'NotAllowedError') {
-                    showToast('⚠️ Klik tombol sekali lagi untuk memutar musik.');
-                } else if (err.name === 'NotSupportedError' || music.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
-                    showToast('⚠️ File audio.mp3 tidak ditemukan atau rusak!');
-                } else {
-                    showToast('⚠️ Gagal memutar: ' + err.message);
-                }
-            });
-        }
+        playMusic();
+        showToast('🎶 Musik sedang diputar...');
     } else {
         music.pause();
         updateAudioUI('paused');
@@ -80,13 +65,20 @@ function toggleAudio() {
     }
 }
 
-// Event listener untuk mendeteksi jika file audio gagal dimuat saat pertama kali membuka halaman
-if (music) {
-    music.addEventListener('error', function() {
-        console.error('Audio source error: File audio.mp3 tidak ditemukan.');
-        showToast('⚠️ Pastikan file audio.mp3 ada di folder yang sama!');
-    });
+// TRIK AUTOPLAY: Putar musik otomatis saat pengguna melakukan interaksi pertama (klik/sentuh) di layar
+function handleFirstInteraction() {
+    if (!isAudioInitialized && music.paused) {
+        playMusic();
+        // Hapus pemanggil setelah interaksi pertama berhasil
+        document.removeEventListener('click', handleFirstInteraction);
+        document.removeEventListener('touchstart', handleFirstInteraction);
+        document.removeEventListener('keydown', handleFirstInteraction);
+    }
 }
+
+document.addEventListener('click', handleFirstInteraction);
+document.addEventListener('touchstart', handleFirstInteraction);
+document.addEventListener('keydown', handleFirstInteraction);
 
 /* ===================================================
    2. Photo Modal Controller

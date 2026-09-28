@@ -54,13 +54,6 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(0, 0, 0, 0.6);
         }
 
-        /* Coquette AI Card Gradient */
-        .ai-card-glow {
-            background: linear-gradient(135deg, #1f1416 0%, #2a1b1e 50%, #181215 100%);
-            border: 1px solid rgba(225, 175, 185, 0.3);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), inset 0 0 15px rgba(225, 175, 185, 0.05);
-        }
-
         /* Photo Frame Styles */
         .polaroid-frame {
             background: #f4eee8;
@@ -130,6 +123,9 @@
 <body class="min-h-screen relative flex flex-col justify-between selection:bg-rose-900 selection:text-amber-100">
 
     <canvas id="sparkleCanvas"></canvas>
+
+    <!-- Elemen Pemutar Audio Musik -->
+    <audio id="bgMusic" src="music.mp3" loop></audio>
 
     <!-- Top Ribbon Header -->
     <header class="stitched-ribbon py-3 px-6 relative z-20 flex justify-between items-center text-xs tracking-widest uppercase text-amber-100/90 font-cinzel">
@@ -226,7 +222,14 @@
                             </div>
                             <span class="font-cinzel text-xs tracking-widest text-amber-200/90 uppercase">Surat Untuk Sahabat Terbaik</span>
                         </div>
-                
+
+                        <!-- Audio Voice Button -->
+                        <button onclick="readWishWithTTS()" id="ttsBtn" class="flex items-center space-x-2 bg-rose-950/80 hover:bg-rose-900 border border-rose-800/70 text-rose-200 px-3 py-1.5 rounded-full text-xs font-sans-clean transition duration-300 shadow-md">
+                            <i id="ttsIcon" class="fa-solid fa-volume-high text-rose-300"></i>
+                            <span id="ttsText">Dengarkan Ucapan Suara 🔊</span>
+                        </button>
+                    </div>
+
                     <!-- Heartfelt Friendship Message Body -->
                     <div id="mainWishLetter" class="font-serif-vintage text-stone-200 text-sm sm:text-base leading-relaxed space-y-4 italic">
                         <p class="font-cursive text-3xl sm:text-4xl text-amber-100 not-italic">
@@ -320,54 +323,53 @@
 
     <script>
         /* ===================================================
-           1. Web Audio API Melody Synthesizer (Gentle Tune)
+           1. Control Play/Pause Audio Musik Real (music.mp3)
            =================================================== */
-        let audioCtx = null;
-        let isPlaying = false;
-        let tuneTimeout = null;
+        function toggleAudio() {
+            const music = document.getElementById('bgMusic');
+            const btnText = document.getElementById('audioStatusText');
+            const icon = document.getElementById('audioIcon');
 
-        const birthdayMelody = [
-            { note: 261.63, duration: 0.5 }, { note: 261.63, duration: 0.5 },
-            { note: 293.66, duration: 0.9 }, { note: 261.63, duration: 0.9 },
-            { note: 349.23, duration: 0.9 }, { note: 329.63, duration: 1.3 },
-            { note: 261.63, duration: 0.5 }, { note: 261.63, duration: 0.5 },
-            { note: 293.66, duration: 0.9 }, { note: 261.63, duration: 0.9 },
-            { note: 392.00, duration: 0.9 }, { note: 349.23, duration: 1.3 },
-        ];
-
-        function playNote(freq, duration) {
-            if (!audioCtx || !isPlaying) return;
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-                gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.12, audioCtx.currentTime + 0.08);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration - 0.05);
-
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch (e) {
-                console.error(e);
+            if (music.paused) {
+                music.play().then(() => {
+                    btnText.innerText = 'Hentikan Musik';
+                    icon.className = 'fa-solid fa-pause text-rose-300 text-xs';
+                }).catch(error => {
+                    console.log('Autoplay ditolak atau file tidak ditemukan:', error);
+                });
+            } else {
+                music.pause();
+                btnText.innerText = 'Putar Musik';
+                icon.className = 'fa-solid fa-music text-rose-300 animate-pulse text-xs';
             }
         }
 
-        function playMelodyLoop(index = 0) {
-            if (!isPlaying) return;
-            const current = birthdayMelody[index % birthdayMelody.length];
-            playNote(current.note, current.duration);
-
-            tuneTimeout = setTimeout(() => {
-                if (isPlaying) {
-                    playMelodyLoop((index + 1) % birthdayMelody.length);
-                }
-            }, current.duration * 1000 + 120);
+        /* ===================================================
+           2. Modal Pop-Up Functions
+           =================================================== */
+        function openPhotoModal(imgSrc, caption) {
+            const modal = document.getElementById('photoModal');
+            document.getElementById('modalImg').src = imgSrc;
+            document.getElementById('modalCaption').innerText = caption;
+            modal.classList.remove('hidden');
         }
 
-        /* =============================================
+        function closePhotoModal() {
+            document.getElementById('photoModal').classList.add('hidden');
+        }
+
+        /* ===================================================
+           3. Confetti & Text-to-Speech Interactivity
+           =================================================== */
+        function triggerCelebration() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function readWishWithTTS() {
+            if ('speechSynthesis' in window) {
+                const text = "Selamat Ulang Tahun, Sahabatku! Di hari bertambahnya usiamu ini, aku cuma mau bilang betapa bersyukurnya aku punya sahabat sejati sepertimu. Semangat terus ya besti, jangan lupain aku walaupun kita udah beda sekolah, semoga panjang umur ya! I miss u bestiku.";
+                const utterance

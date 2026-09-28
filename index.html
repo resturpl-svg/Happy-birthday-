@@ -124,6 +124,35 @@
 
     <canvas id="sparkleCanvas"></canvas>
 
+    <!-- LANDING PAGE OVERLAY (BUKA SURAT) -->
+<div id="welcomeOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#120e0f] bg-opacity-95 backdrop-blur-md transition-opacity duration-700">
+    <div class="vintage-paper rounded-2xl p-8 sm:p-10 max-w-md w-full text-center border border-amber-900/60 shadow-2xl relative animate-float-gentle">
+        
+        <!-- Wax Seal Badge -->
+        <div class="w-16 h-16 rounded-full bg-rose-950 border-2 border-amber-600/80 mx-auto flex items-center justify-center text-amber-200 text-xl font-cinzel font-bold shadow-lg my-2">
+            ✦
+        </div>
+
+        <h2 class="font-cursive text-4xl sm:text-5xl text-amber-100 mt-4 mb-2">
+            Special Invitation
+        </h2>
+        
+        <p class="font-serif-vintage italic text-stone-300 text-sm mb-6 opacity-90 leading-relaxed">
+            "Ada surat ucapan spesial dan alunan musik yang disiapkan khusus untukmu."
+        </p>
+
+        <!-- Tombol Buka Surat (Trigger Autoplay) -->
+        <button onclick="openEnvelope()" class="group relative inline-flex items-center justify-center px-8 py-3.5 overflow-hidden font-medium text-amber-100 transition duration-300 ease-out border border-amber-700/80 rounded-full shadow-2xl bg-gradient-to-r from-stone-900 via-rose-950 to-stone-900 hover:border-amber-400 cursor-pointer">
+            <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-rose-900/40 via-transparent to-amber-900/40 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+            <span class="relative flex items-center space-x-3 font-cinzel text-xs tracking-widest uppercase">
+                <i class="fa-solid fa-envelope-open text-rose-300 text-sm"></i>
+                <span>Buka Surat ✨</span>
+            </span>
+        </button>
+
+    </div>
+</div>
+
     <!-- Elemen Pemutar Audio Musik -->
     <audio id="bgMusic" <src="music.mp3" preload="auto" loop></audio>
 

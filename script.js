@@ -1,9 +1,8 @@
 /* ===================================================
-   1. Audio Controller dengan Autoplay On First Click
+   1. Audio Controller & Overlay Logic (Autoplay Trigger)
    =================================================== */
 const music = new Audio('audio.mp3');
 music.loop = true;
-let isAudioInitialized = false;
 
 function showToast(msg) {
     const toast = document.getElementById('toastMessage');
@@ -33,7 +32,7 @@ function updateAudioUI(state) {
             el.innerText = 'LOAD';
             el.className = 'headerTogglePill font-bold text-[10px] uppercase px-2 py-0.5 rounded-full bg-amber-950/80 text-amber-300 border border-amber-800/80';
         });
-    } else {
+    } else { // 'paused' / 'off'
         headerLabels.forEach(el => el.innerText = 'Putar Musik');
         headerIcons.forEach(el => el.className = 'headerAudioIcon fa-solid fa-power-off text-rose-500 text-xs');
         headerPills.forEach(el => {
@@ -43,42 +42,51 @@ function updateAudioUI(state) {
     }
 }
 
-function playMusic() {
+// Fungsi utama membuka surat dan memutar audio otomatis
+function openEnvelope() {
+    const overlay = document.getElementById('welcomeOverlay');
+    
+    // 1. Putar Musik
     updateAudioUI('loading');
     music.play().then(() => {
         updateAudioUI('playing');
-        isAudioInitialized = true;
+        showToast('🎶 Selamat datang! Musik diputar...');
     }).catch(err => {
-        console.warn('Autoplay terhalang browser:', err);
+        console.error('Audio Play Error:', err);
         updateAudioUI('paused');
+        showToast('⚠️ Gagal memutar lagu. Cek file audio.mp3!');
     });
+
+    // 2. Jalankan Efek Konfeti Sambutan
+    triggerCelebration();
+
+    // 3. Menghilangkan Overlay dengan Efek Fade-Out
+    if (overlay) {
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+        }, 700);
+    }
 }
 
+// Tombol manual ON/OFF musik pada header
 function toggleAudio() {
     if (music.paused) {
-        playMusic();
-        showToast('🎶 Musik sedang diputar...');
+        updateAudioUI('loading');
+        music.play().then(() => {
+            updateAudioUI('playing');
+            showToast('🎶 Musik diputar...');
+        }).catch(err => {
+            console.error('Audio Play Error:', err);
+            updateAudioUI('paused');
+            showToast('⚠️ File audio.mp3 tidak ditemukan!');
+        });
     } else {
         music.pause();
         updateAudioUI('paused');
         showToast('⏸️ Musik dihentikan.');
     }
 }
-
-// TRIK AUTOPLAY: Putar musik otomatis saat pengguna melakukan interaksi pertama (klik/sentuh) di layar
-function handleFirstInteraction() {
-    if (!isAudioInitialized && music.paused) {
-        playMusic();
-        // Hapus pemanggil setelah interaksi pertama berhasil
-        document.removeEventListener('click', handleFirstInteraction);
-        document.removeEventListener('touchstart', handleFirstInteraction);
-        document.removeEventListener('keydown', handleFirstInteraction);
-    }
-}
-
-document.addEventListener('click', handleFirstInteraction);
-document.addEventListener('touchstart', handleFirstInteraction);
-document.addEventListener('keydown', handleFirstInteraction);
 
 /* ===================================================
    2. Photo Modal Controller
@@ -119,9 +127,6 @@ function triggerCelebration() {
             origin: { y: 0.6, x: 0.8 },
             colors: ['#f43f5e', '#fbbf24', '#e2e8f0', '#9333ea']
         });
-        showToast('✨ Happy Birthday Bestie! ✨');
-    } else {
-        showToast('🎉 Selamat Ulang Tahun!');
     }
 }
 

@@ -16,7 +16,6 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        /* Typography */
         .font-cursive { font-family: 'Alex Brush', cursive; }
         .font-serif-vintage { font-family: 'Playfair Display', serif; }
         .font-cinzel { font-family: 'Cinzel', serif; }
@@ -29,7 +28,6 @@
             font-family: 'Playfair Display', serif;
         }
 
-        /* Stitched Ribbon Effect */
         .stitched-ribbon {
             background-color: #2b1c1d;
             background-image: repeating-linear-gradient(90deg, #3d2628, #3d2628 15px, #1c1112 15px, #1c1112 30px);
@@ -38,14 +36,12 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
         }
 
-        /* Dark Denim Accent Box */
         .dark-denim-bg {
             background: radial-gradient(circle at center, #232836 0%, #13161f 100%);
             border: 1px solid rgba(138, 115, 100, 0.3);
             box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.9), 0 15px 35px rgba(0, 0, 0, 0.7);
         }
 
-        /* Vintage Letter Paper Effect */
         .vintage-paper {
             background: #1b1617;
             background-image: radial-gradient(#2d2224 1px, transparent 0);
@@ -54,300 +50,145 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(0, 0, 0, 0.6);
         }
 
-        /* Photo Frame Styles */
         .polaroid-frame {
             background: #f4eee8;
             padding: 12px 12px 35px 12px;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.2);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.8);
             transform: rotate(-3deg);
             transition: all 0.3s ease;
         }
-        .polaroid-frame:hover {
-            transform: rotate(0deg) scale(1.03);
-            box-shadow: 0 20px 35px rgba(220, 180, 160, 0.3);
-        }
+        .polaroid-frame:hover { transform: rotate(0deg) scale(1.03); }
 
         .heart-locket-frame {
             border: 4px solid #8c7a6b;
-            box-shadow: 0 0 20px rgba(0,0,0,0.9), inset 0 0 15px rgba(0,0,0,0.8);
             border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
             transform: rotate(4deg);
             transition: all 0.3s ease;
         }
-        .heart-locket-frame:hover {
-            transform: rotate(0deg) scale(1.04);
-            border-color: #d4a373;
-        }
+        .heart-locket-frame:hover { transform: rotate(0deg) scale(1.04); }
 
         .vintage-oval-frame {
             border: 6px double #a88a72;
             border-radius: 50%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
             transform: rotate(-2deg);
             transition: all 0.3s ease;
         }
-        .vintage-oval-frame:hover {
-            transform: rotate(0deg) scale(1.04);
-            border-color: #f3e8ee;
-        }
-
-        /* Animations */
-        @keyframes floatSlow {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-12px) rotate(4deg); }
-        }
-        @keyframes floatGentle {
-            0%, 100% { transform: translateY(0px) translateX(0px); }
-            50% { transform: translateY(-8px) translateX(5px); }
-        }
-        @keyframes pulseGlow {
-            0%, 100% { filter: drop-shadow(0 0 10px rgba(220, 180, 160, 0.2)); }
-            50% { filter: drop-shadow(0 0 25px rgba(220, 180, 160, 0.6)); }
-        }
-
-        .animate-float-slow { animation: floatSlow 7s ease-in-out infinite; }
-        .animate-float-gentle { animation: floatGentle 5s ease-in-out infinite; }
-        .animate-pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
+        .vintage-oval-frame:hover { transform: rotate(0deg) scale(1.04); }
 
         #sparkleCanvas {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 1;
         }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #120e0f; }
-        ::-webkit-scrollbar-thumb { background: #3a2729; border-radius: 3px; }
     </style>
 </head>
 <body class="min-h-screen relative flex flex-col justify-between selection:bg-rose-900 selection:text-amber-100">
 
+    <!-- OVERLAY LANDING PAGE (BUKA SURAT & TRIGGER MUSIK) -->
+    <div id="welcomeOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#120e0f] bg-opacity-95 backdrop-blur-md transition-opacity duration-700">
+        <div class="vintage-paper rounded-2xl p-8 sm:p-10 max-w-md w-full text-center border border-amber-900/60 shadow-2xl relative">
+            <div class="w-16 h-16 rounded-full bg-rose-950 border-2 border-amber-600/80 mx-auto flex items-center justify-center text-amber-200 text-xl font-cinzel font-bold shadow-lg my-2">
+                ✦
+            </div>
+            <h2 class="font-cursive text-4xl sm:text-5xl text-amber-100 mt-4 mb-2">Special Invitation</h2>
+            <p class="font-serif-vintage italic text-stone-300 text-sm mb-6 opacity-90">
+                "Ada surat ucapan spesial dan alunan musik yang disiapkan khusus untukmu."
+            </p>
+            <button onclick="openEnvelope()" class="px-8 py-3.5 font-medium text-amber-100 border border-amber-700/80 rounded-full bg-stone-900 hover:bg-rose-950 cursor-pointer font-cinzel text-xs tracking-widest uppercase transition shadow-xl">
+                <i class="fa-solid fa-envelope-open text-rose-300 mr-2"></i> Buka Surat ✨
+            </button>
+        </div>
+    </div>
+
     <canvas id="sparkleCanvas"></canvas>
 
-    <!-- LANDING PAGE OVERLAY (BUKA SURAT) -->
-<div id="welcomeOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#120e0f] bg-opacity-95 backdrop-blur-md transition-opacity duration-700">
-    <div class="vintage-paper rounded-2xl p-8 sm:p-10 max-w-md w-full text-center border border-amber-900/60 shadow-2xl relative animate-float-gentle">
-        
-        <!-- Wax Seal Badge -->
-        <div class="w-16 h-16 rounded-full bg-rose-950 border-2 border-amber-600/80 mx-auto flex items-center justify-center text-amber-200 text-xl font-cinzel font-bold shadow-lg my-2">
-            ✦
-        </div>
-
-        <h2 class="font-cursive text-4xl sm:text-5xl text-amber-100 mt-4 mb-2">
-            Special Invitation
-        </h2>
-        
-        <p class="font-serif-vintage italic text-stone-300 text-sm mb-6 opacity-90 leading-relaxed">
-            "Ada surat ucapan spesial dan alunan musik yang disiapkan khusus untukmu."
-        </p>
-
-        <!-- Tombol Buka Surat (Trigger Autoplay) -->
-        <button onclick="openEnvelope()" class="group relative inline-flex items-center justify-center px-8 py-3.5 overflow-hidden font-medium text-amber-100 transition duration-300 ease-out border border-amber-700/80 rounded-full shadow-2xl bg-gradient-to-r from-stone-900 via-rose-950 to-stone-900 hover:border-amber-400 cursor-pointer">
-            <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-rose-900/40 via-transparent to-amber-900/40 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-            <span class="relative flex items-center space-x-3 font-cinzel text-xs tracking-widest uppercase">
-                <i class="fa-solid fa-envelope-open text-rose-300 text-sm"></i>
-                <span>Buka Surat ✨</span>
-            </span>
-        </button>
-
-    </div>
-</div>
-
-    <!-- Elemen Pemutar Audio Musik -->
-    <audio id="bgMusic" <src="music.mp3" preload="auto" loop></audio>
-
-    <!-- Top Ribbon Header (HANYA SATU-SATUNYA TOMBOL MUSIK DI ATAS SENDIRI) -->
+    <!-- Header Ribbons & Music Button -->
     <header class="stitched-ribbon py-3 px-6 relative z-20 flex justify-between items-center text-xs tracking-widest uppercase text-amber-100/90 font-cinzel">
         <div class="flex items-center space-x-2">
             <i class="fa-solid fa-ribbon text-rose-300 text-sm"></i>
-            <span class="hidden sm:inline">Special Birthday Greeting for Bestie</span>
-            <span class="sm:hidden">For My Bestie</span>
+            <span>For My Bestie</span>
         </div>
-
-        <!-- Header Controls: Tombol ON/OFF Musik di Atas Sendiri -->
-        <div class="flex items-center space-x-2">
-            <div class="flex items-center space-x-2 bg-stone-950/80 border border-amber-900/60 px-3 py-1.5 rounded-full shadow-lg">
-                <span class="text-[10px] text-stone-400 font-sans-clean font-medium uppercase tracking-wider hidden sm:inline">Musik</span>
-                <button onclick="toggleAudio()" class="flex items-center space-x-2 bg-stone-900 hover:bg-stone-800 px-3 py-1 rounded-full text-xs font-sans-clean transition-all duration-300 border border-stone-700 cursor-pointer">
-                    <!-- Dynamic Power Icon & Switch Status -->
-                    <i class="headerAudioIcon fa-solid fa-power-off text-rose-500 text-xs transition duration-300"></i>
-                    <span class="headerTogglePill font-bold text-[10px] uppercase px-2 py-0.5 rounded-full bg-rose-950/80 text-rose-300 border border-rose-800/80">OFF</span>
-                    <span class="headerAudioLabel font-sans-clean text-[11px] text-stone-300 hidden md:inline">Putar Musik</span>
-                </button>
-            </div>
-        </div>
+        <button onclick="toggleAudio()" class="flex items-center space-x-2 bg-stone-900 hover:bg-stone-800 px-3 py-1 rounded-full text-xs transition border border-stone-700 cursor-pointer">
+            <i class="headerAudioIcon fa-solid fa-power-off text-rose-500 text-xs"></i>
+            <span class="headerTogglePill font-bold text-[10px] uppercase text-rose-300">OFF</span>
+        </button>
     </header>
 
-    <main class="container mx-auto px-4 py-8 max-w-3xl flex-grow relative z-10">
+    <main class="container mx-auto px-4 py-8 max-w-3xl flex-grow relative z-10 text-center">
+        <!-- Title -->
+        <div class="relative inline-block my-2">
+            <h1 class="text-6xl sm:text-7xl md:text-8xl font-cursive text-amber-100/90 drop-shadow-2xl">
+                Happy Birthday!
+            </h1>
+            <span class="block font-sans-clean text-xs sm:text-sm tracking-[0.25em] text-rose-300/90 -mt-2 uppercase font-medium">
+                To My Dearest Bestie
+            </span>
+        </div>
 
-        <!-- HEADER SECTION -->
-        <section class="text-center relative my-6">
-            <!-- Vintage Safety Pin Deco (Left) -->
-            <div class="absolute -top-4 left-2 sm:left-10 opacity-75 animate-float-gentle">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c5b39b" stroke-width="1.5">
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4m-10 0a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2M7 11h10"/>
-                </svg>
+        <p class="font-serif-vintage italic text-stone-300 text-sm sm:text-base my-4">
+            "Wishing you endless happiness, continuous success, and brilliant moments ahead!"
+        </p>
+
+        <!-- Foto 1: Polaroid -->
+        <section class="my-8 flex justify-center">
+            <div class="polaroid-frame cursor-pointer" onclick="openPhotoModal('image1.jpg', 'Bestie Forever ✨')">
+                <img src="image1.jpg" alt="Foto 1" class="w-64 sm:w-80 h-64 sm:h-80 object-cover rounded-sm border border-stone-300">
+                <p class="font-cursive text-2xl text-stone-800 text-center mt-3 font-semibold">Bestie Forever ✨</p>
             </div>
-
-            <!-- Silver Birds Deco (Right) -->
-            <div class="absolute right-2 sm:right-10 -top-6 flex space-x-2 pointer-events-none opacity-80">
-                <svg class="w-9 h-9 text-stone-300 animate-float-slow" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M21.5,10.5 C20,9 17,8.5 15,10 C13,7.5 9,6.5 6,8.5 C4.5,9.5 3.5,11.5 3,13 C5,12.5 7,13 8.5,14.5 C6,15 4,16.5 3.5,18.5 C5.5,18 7.5,18.5 9,19.5 C12,21.5 16,20.5 18,17.5 C19.5,15.5 22,12.5 21.5,10.5 Z"/>
-                </svg>
-            </div>
-
-            <!-- Title & Tagline -->
-            <div class="relative inline-block my-2 animate-pulse-glow">
-                <h1 class="text-6xl sm:text-7xl md:text-8xl font-cursive text-amber-100/90 tracking-wide drop-shadow-2xl select-none">
-                    Happy Birthday!
-                </h1>
-                <span class="block font-sans-clean text-xs sm:text-sm tracking-[0.25em] text-rose-300/90 -mt-2 uppercase font-medium">
-                    To My Dearest Bestie
-                </span>
-            </div>
-
-            <!-- Vintage Flower Ornament Divider -->
-            <div class="flex justify-center items-center my-4 space-x-3 text-amber-200/60">
-                <span class="h-[1px] w-12 bg-stone-700"></span>
-                <span class="text-xl">❀ 𝒯ℴ ℳ𝓎 ℬℯ𝓈𝓉 𝐹𝓇𝒾ℯ𝓃𝒹 ❀</span>
-                <span class="h-[1px] w-12 bg-stone-700"></span>
-            </div>
-
-            <p class="font-serif-vintage italic text-stone-300 text-sm sm:text-base md:text-lg max-w-lg mx-auto leading-relaxed px-4 font-light opacity-90">
-                "Wishing you endless happiness, continuous success, and brilliant moments ahead!"
-            </p>
         </section>
 
-        <!-- PHOTO FRAME 1: POLAROID STYLE WITH WOODEN CLIP -->
-        <section class="my-10 flex justify-center">
-            <div class="relative group cursor-pointer" onclick="openPhotoModal('image1.jpg', 'Foto Seragam Pramuka - Polaroid')">
-                <!-- Cute Wooden Clip -->
-                <div class="absolute -top-5 left-1/2 -translate-x-1/2 z-20 w-8 h-10 bg-amber-800 border border-amber-900 rounded-sm shadow-md flex items-center justify-center">
-                    <div class="w-1.5 h-6 bg-stone-400 rounded-full"></div>
-                </div>
-                <div class="polaroid-frame relative">
-                    <img src="image1.jpg" alt="Foto Pramuka Bestie" class="w-64 sm:w-80 h-64 sm:h-80 object-cover rounded-sm border border-stone-300">
-                    <p class="font-cursive text-2xl text-stone-800 text-center mt-3 font-semibold">Bestie Forever ✨</p>
+        <!-- Wish Letter Card -->
+        <section class="my-8 text-left">
+            <div class="dark-denim-bg rounded-2xl p-6 sm:p-10 shadow-2xl">
+                <div class="vintage-paper rounded-xl p-6 sm:p-8 border border-stone-800 space-y-4">
+                    <p class="font-cursive text-3xl sm:text-4xl text-amber-100">Selamat Ulang Tahun, Sahabatku!</p>
+                    <p class="font-serif-vintage text-stone-200 text-sm sm:text-base italic leading-relaxed">
+                        Di hari bertambahnya usiamu ini, aku cuma mau bilang betapa bersyukurnya aku punya sahabat sejati sepertimu. Terima kasih udah selalu ada, tempat berbagi cerita, ketawa bareng, dan laluin banyak hal seru sama-sama.
+                    </p>
+                    <p class="text-amber-200 font-medium bg-rose-950/40 p-4 rounded-lg border border-rose-900/30">
+                        "Semangat terus ya bestii, jangan lupain aku walaupun kita udah beda sekolahh, semoga panjang umur yaa!!!. I Miss u bestiku🫰🏻🤍"
+                    </p>
                 </div>
             </div>
         </section>
 
-        <!-- MAIN GREETING CARD SECTION -->
-        <section class="my-10 relative">
-            <div class="dark-denim-bg rounded-2xl p-6 sm:p-10 relative overflow-hidden shadow-2xl">
-                <!-- Heart Locket Accent Top Right -->
-                <div class="absolute -top-3 -right-3 text-stone-400 opacity-80 animate-float-gentle pointer-events-none">
-                    <svg class="w-16 h-16 drop-shadow-lg" viewBox="0 0 100 100" fill="currentColor">
-                        <path d="M12,35 A22,22 0 0,1 50,28 A22,22 0 0,1 88,35 A22,22 0 0,1 88,62 L50,92 L12,62 A22,22 0 0,1 12,35 Z" fill="#322627" stroke="#8c7a6b" stroke-width="3"/>
-                    </svg>
-                </div>
-
-                <!-- Vintage Paper Card Outer Box -->
-                <div class="vintage-paper rounded-xl p-6 sm:p-8 relative border border-stone-800">
-                    <!-- Wax Seal Badge Header -->
-                    <div class="flex justify-center items-center border-b border-stone-800/80 pb-4 mb-6">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-full bg-rose-950 border border-rose-700/80 flex items-center justify-center text-rose-200 text-xs font-cinzel font-bold shadow-md">
-                                ✦
-                            </div>
-                            <span class="font-cinzel text-xs tracking-widest text-amber-200/90 uppercase">Surat Untuk Sahabat Terbaik</span>
-                        </div>
-                    </div>
-
-                    <!-- Heartfelt Friendship Message Body -->
-                    <div id="mainWishLetter" class="font-serif-vintage text-stone-200 text-sm sm:text-base leading-relaxed space-y-4 italic">
-                        <p class="font-cursive text-3xl sm:text-4xl text-amber-100 not-italic">
-                            Selamat Ulang Tahun, Sahabatku!
-                        </p>
-
-                        <p>
-                            Di hari bertambahnya usiamu ini, aku cuma mau bilang betapa bersyukurnya aku punya sahabat sejati sepertimu. Terima kasih udah selalu ada, tempat berbagi cerita, ketawa bareng, dan laluin banyak hal seru sama-sama.
-                        </p>
-
-                        <p class="text-amber-200/90 font-medium not-italic bg-rose-950/30 p-4 rounded-lg border border-rose-900/30">
-                            "Semangat terus ya bestii, jangan lupain aku walaupun kita udah beda sekolahh, semoga panjang umur yaa!!!. I Miss u bestiku🫰🏻🤍"
-                        </p>
-
-                        <p>
-                            Semoga di usiamu yang baru ini, semua impian besar dan cita-citamu bisa terwujud satu per satu. Semoga harimu selalu dipenuhi kebahagiaan, kesehatan, ketenangan, dan keberkahan yang berlimpah.
-                        </p>
-
-                        <div class="pt-6 border-t border-stone-800/80 flex justify-between items-end not-italic">
-                            <div>
-                                <span class="block text-[11px] font-sans-clean text-stone-400 uppercase tracking-widest">Sahabat Terbaik Selamanya</span>
-                                <span class="font-cinzel text-xs text-amber-200/80">Best Friends Forever</span>
-                            </div>
-                            <div class="text-right">
-                                <span class="font-cursive text-2xl sm:text-3xl text-rose-300 font-bold block">
-                                    Dari Sahabatmu,
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Foto 2: Locket Frame -->
+        <section class="my-8 flex justify-center">
+            <div class="heart-locket-frame overflow-hidden p-1 bg-stone-900 cursor-pointer" onclick="openPhotoModal('image2.jpg', 'Kebersamaan Sekolah')">
+                <img src="image2.jpg" alt="Foto 2" class="w-60 sm:w-72 h-60 sm:h-72 object-cover rounded-full">
             </div>
         </section>
 
-        <!-- PHOTO FRAME 2: HEART LOCKET STYLE -->
-        <section class="my-10 flex justify-center">
-            <div class="relative group cursor-pointer" onclick="openPhotoModal('image2.jpg', 'Foto Seragam Sekolah - Heart Locket')">
-                <div class="heart-locket-frame overflow-hidden p-1 bg-stone-900">
-                    <img src="image2.jpg" alt="Foto Seragam Sekolah" class="w-60 sm:w-72 h-60 sm:h-72 object-cover rounded-full">
-                </div>
+        <!-- Foto 3: Vintage Oval -->
+        <section class="my-8 flex justify-center">
+            <div class="vintage-oval-frame overflow-hidden p-1.5 bg-stone-900 cursor-pointer" onclick="openPhotoModal('image3.jpg', 'Memori Indah')">
+                <img src="image3.jpg" alt="Foto 3" class="w-64 sm:w-80 h-64 sm:h-80 object-cover rounded-full">
             </div>
         </section>
 
-        <!-- PHOTO FRAME 3: VINTAGE OVAL FRAME WITH BOW -->
-        <section class="my-10 flex justify-center">
-            <div class="relative group cursor-pointer" onclick="openPhotoModal('image3.jpg', 'Foto Kebersamaan Bestie - Vintage Oval Frame')">
-                <!-- Cute Ribbon Bow -->
-                <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-20 text-rose-300 text-2xl drop-shadow-md">
-                    <i class="fa-solid fa-ribbon"></i>
-                </div>
-                <div class="vintage-oval-frame overflow-hidden p-1.5 bg-stone-900">
-                    <img src="image3.jpg" alt="Foto Bersama Outdoor" class="w-64 sm:w-80 h-64 sm:h-80 object-cover rounded-full">
-                </div>
-            </div>
-        </section>
-
-        <!-- Interactive Celebration Button -->
-        <section class="mt-8 text-center">
-            <button onclick="triggerCelebration()" class="group relative inline-flex items-center justify-center px-8 py-3.5 overflow-hidden font-medium text-amber-100 transition duration-300 ease-out border border-amber-800/60 rounded-full shadow-xl bg-gradient-to-r from-stone-900 via-amber-950 to-stone-900 hover:border-amber-400 cursor-pointer">
-                <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-rose-900/40 via-transparent to-amber-900/40 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                <span class="relative flex items-center space-x-2 font-serif-vintage tracking-wider text-xs sm:text-sm">
-                    <i class="fa-solid fa-wand-magic-sparkles text-rose-300"></i>
-                    <span>Rayakan Dengan Sparkles ✨</span>
-                </span>
-            </button>
-        </section>
-
+        <!-- Sparkles Button -->
+        <button onclick="triggerCelebration()" class="px-8 py-3.5 border border-amber-800 rounded-full bg-stone-900 text-amber-100 hover:border-amber-400 cursor-pointer transition shadow-xl my-6">
+            <i class="fa-solid fa-wand-magic-sparkles text-rose-300 mr-2"></i>
+            <span>Rayakan Dengan Sparkles ✨</span>
+        </button>
     </main>
 
-    <!-- Photo Modal Pop-up -->
-    <div id="photoModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <!-- Modal Pop-up Foto -->
+    <div id="photoModal" class="fixed inset-0 z-50 bg-black/90 hidden flex items-center justify-center p-4">
         <div class="relative max-w-xl w-full bg-stone-950 border border-amber-900/60 rounded-2xl p-4 shadow-2xl">
-            <button onclick="closePhotoModal()" class="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-rose-950 text-rose-200 border border-rose-700 flex items-center justify-center font-bold text-sm shadow-lg hover:bg-rose-900 transition">
-                ✕
-            </button>
-            <img id="modalImg" src="" alt="Modal Photo" class="w-full max-h-[75vh] object-contain rounded-lg border border-stone-800">
+            <button onclick="closePhotoModal()" class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-rose-950 text-rose-200 font-bold flex items-center justify-center shadow-lg">✕</button>
+            <img id="modalImg" src="" class="w-full max-h-[75vh] object-contain rounded-lg border border-stone-800">
             <p id="modalCaption" class="text-center font-serif-vintage text-amber-200 text-sm mt-3 italic"></p>
         </div>
     </div>
 
-    <!-- Custom Notification Toast Message -->
-    <div id="toastMessage" class="fixed top-20 right-6 z-50 bg-stone-900/95 border border-amber-700/80 text-amber-100 px-4 py-3 rounded-xl shadow-2xl text-xs font-sans-clean hidden transition duration-300 max-w-xs"></div>
-
-    <!-- Bottom Ribbon Footer -->
-    <footer class="stitched-ribbon py-4 px-4 text-center text-xs font-cinzel text-stone-400 relative z-20 mt-12">
-        <p>Crafted with <i class="fa-solid fa-star text-amber-300 mx-1"></i> Special for Best Friends Forever</p>
-        <p class="text-[10px] text-stone-500 mt-1 uppercase tracking-widest font-sans-clean">Dark Coquette • Vintage Edition</p>
-    </footer>
+    <!-- Toast Notification -->
+    <div id="toastMessage" class="fixed top-20 right-6 z-50 bg-stone-900/95 border border-amber-700/80 text-amber-100 px-4 py-3 rounded-xl shadow-2xl text-xs hidden transition"></div>
 
     <script>
-        /* ===================================================
-           Audio Controller with Robust Loading & Toggle States
-           =================================================== */
-        const music = document.getElementById('bgMusic');
+        // MENDETEKSI NAMA FILE MUSIK (Bisa music.mp3 atau audio.mp3)
+        const music = new Audio('music.mp3'); 
+        music.loop = true;
 
         function showToast(msg) {
             const toast = document.getElementById('toastMessage');
@@ -358,29 +199,109 @@
             }
         }
 
-        // Synchronize Header UI Controls
-        function updateAudioUI(state) {
-            const headerLabels = document.querySelectorAll('.headerAudioLabel');
-            const headerIcons = document.querySelectorAll('.headerAudioIcon');
-            const headerPills = document.querySelectorAll('.headerTogglePill');
+        function updateAudioUI(isPlaying) {
+            const pill = document.querySelector('.headerTogglePill');
+            const icon = document.querySelector('.headerAudioIcon');
+            if (isPlaying) {
+                if(pill) pill.innerText = 'ON';
+                if(icon) icon.className = 'headerAudioIcon fa-solid fa-power-off text-emerald-400 text-xs';
+            } else {
+                if(pill) pill.innerText = 'OFF';
+                if(icon) icon.className = 'headerAudioIcon fa-solid fa-power-off text-rose-500 text-xs';
+            }
+        }
 
-            if (state === 'playing') {
-                headerLabels.forEach(el => el.innerText = 'Jeda Musik');
-                headerIcons.forEach(el => el.className = 'headerAudioIcon fa-solid fa-power-off text-emerald-400 text-xs');
-                headerPills.forEach(el => {
-                    el.innerText = 'ON';
-                    el.className = 'headerTogglePill font-bold text-[10px] uppercase px-2 py-0.5 rounded-full bg-emerald-950/90 text-emerald-300 border border-emerald-700/80 animate-pulse';
+        function openEnvelope() {
+            document.getElementById('welcomeOverlay').classList.add('hidden');
+            
+            // Coba putar file music.mp3, jika gagal ganti otomatis mencari audio.mp3
+            music.play().then(() => {
+                updateAudioUI(true);
+                showToast('🎶 Musik diputar...');
+            }).catch(err => {
+                console.warn("Mencoba fallback audio...");
+                music.src = 'audio.mp3';
+                music.play().then(() => {
+                    updateAudioUI(true);
+                    showToast('🎶 Musik diputar...');
+                }).catch(() => {
+                    showToast('⚠️ File musik (music.mp3 / audio.mp3) tidak ditemukan!');
                 });
-            } else if (state === 'loading') {
-                headerLabels.forEach(el => el.innerText = 'Memuat...');
-                headerIcons.forEach(el => el.className = 'headerAudioIcon fa-solid fa-spinner animate-spin text-amber-300 text-xs');
-                headerPills.forEach(el => {
-                    el.innerText = 'LOAD';
-                    el.className = 'headerTogglePill font-bold text-[10px] uppercase px-2 py-0.5 rounded-full bg-amber-950/80 text-amber-300 border border-amber-800/80';
-                });
-            } else { // 'paused' / 'off'
-                headerLabels.forEach(el => el.innerText = 'Putar Musik');
-                headerIcons.forEach(el => el.className = 'headerAudioIcon fa-solid fa-power-off text-rose-500 text-xs');
-                headerPills.forEach(el => {
-                    el.innerText = 'OFF';
-                    el.className = 'headerTogglePill font-bold tex
+            });
+
+            triggerCelebration();
+        }
+
+        function toggleAudio() {
+            if (music.paused) {
+                music.play().then(() => {
+                    updateAudioUI(true);
+                    showToast('🎶 Musik diputar...');
+                }).catch(() => showToast('⚠️ File musik tidak ditemukan!'));
+            } else {
+                music.pause();
+                updateAudioUI(false);
+                showToast('⏸️ Musik dihentikan.');
+            }
+        }
+
+        function openPhotoModal(src, cap) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modalCaption').innerText = cap;
+            document.getElementById('photoModal').classList.remove('hidden');
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photoModal').classList.add('hidden');
+        }
+
+        function triggerCelebration() {
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+            }
+        }
+
+        // Ambient Sparkles Background
+        const canvas = document.getElementById('sparkleCanvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            class Particle {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.alpha = Math.random();
+                    this.speedAlpha = 0.005 + Math.random() * 0.01;
+                    this.dir = Math.random() > 0.5 ? 1 : -1;
+                }
+                update() {
+                    this.alpha += this.speedAlpha * this.dir;
+                    if (this.alpha >= 1 || this.alpha <= 0) this.dir *= -1;
+                }
+                draw() {
+                    ctx.fillStyle = `rgba(243, 232, 238, ${Math.max(0, this.alpha * 0.5)})`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            for (let i = 0; i < 40; i++) particles.push(new Particle());
+            function animateSparkles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animateSparkles);
+            }
+            animateSparkles();
+        }
+    </script>
+</body>
+</html>

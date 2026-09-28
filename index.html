@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -125,9 +126,9 @@
     <canvas id="sparkleCanvas"></canvas>
 
     <!-- Elemen Pemutar Audio Musik -->
-    <audio id="bgMusic" src="music.mp3" loop></audio>
+    <audio id="bgMusic" src="music.mp3" preload="auto" loop></audio>
 
-    <!-- Top Ribbon Header -->
+    <!-- Top Ribbon Header (HANYA SATU-SATUNYA TOMBOL MUSIK DI ATAS SENDIRI) -->
     <header class="stitched-ribbon py-3 px-6 relative z-20 flex justify-between items-center text-xs tracking-widest uppercase text-amber-100/90 font-cinzel">
         <div class="flex items-center space-x-2">
             <i class="fa-solid fa-ribbon text-rose-300 text-sm"></i>
@@ -135,13 +136,17 @@
             <span class="sm:hidden">For My Bestie</span>
         </div>
 
-        <!-- Header Controls -->
+        <!-- Header Controls: Tombol ON/OFF Musik di Atas Sendiri -->
         <div class="flex items-center space-x-2">
-            <!-- Audio Control Toggle -->
-            <button id="audioToggle" onclick="toggleAudio()" class="flex items-center space-x-2 bg-stone-900/90 hover:bg-stone-800 border border-amber-900/50 px-3.5 py-1.5 rounded-full transition-all duration-300 text-amber-200 shadow-lg cursor-pointer">
-                <i id="audioIcon" class="fa-solid fa-music text-rose-300 animate-pulse text-xs"></i>
-                <span id="audioStatusText" class="font-sans-clean text-[11px]">Putar Musik</span>
-            </button>
+            <div class="flex items-center space-x-2 bg-stone-950/80 border border-amber-900/60 px-3 py-1.5 rounded-full shadow-lg">
+                <span class="text-[10px] text-stone-400 font-sans-clean font-medium uppercase tracking-wider hidden sm:inline">Musik</span>
+                <button onclick="toggleAudio()" class="flex items-center space-x-2 bg-stone-900 hover:bg-stone-800 px-3 py-1 rounded-full text-xs font-sans-clean transition-all duration-300 border border-stone-700 cursor-pointer">
+                    <!-- Dynamic Power Icon & Switch Status -->
+                    <i class="headerAudioIcon fa-solid fa-power-off text-rose-500 text-xs transition duration-300"></i>
+                    <span class="headerTogglePill font-bold text-[10px] uppercase px-2 py-0.5 rounded-full bg-rose-950/80 text-rose-300 border border-rose-800/80">OFF</span>
+                    <span class="headerAudioLabel font-sans-clean text-[11px] text-stone-300 hidden md:inline">Putar Musik</span>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -201,9 +206,7 @@
 
         <!-- MAIN GREETING CARD SECTION -->
         <section class="my-10 relative">
-            
             <div class="dark-denim-bg rounded-2xl p-6 sm:p-10 relative overflow-hidden shadow-2xl">
-                
                 <!-- Heart Locket Accent Top Right -->
                 <div class="absolute -top-3 -right-3 text-stone-400 opacity-80 animate-float-gentle pointer-events-none">
                     <svg class="w-16 h-16 drop-shadow-lg" viewBox="0 0 100 100" fill="currentColor">
@@ -213,21 +216,14 @@
 
                 <!-- Vintage Paper Card Outer Box -->
                 <div class="vintage-paper rounded-xl p-6 sm:p-8 relative border border-stone-800">
-                    
-                    <!-- Wax Seal Badge Accent & TTS Voice Button -->
-                    <div class="flex flex-wrap justify-between items-center border-b border-stone-800/80 pb-4 mb-6 gap-3">
+                    <!-- Wax Seal Badge Header -->
+                    <div class="flex justify-center items-center border-b border-stone-800/80 pb-4 mb-6">
                         <div class="flex items-center space-x-3">
                             <div class="w-8 h-8 rounded-full bg-rose-950 border border-rose-700/80 flex items-center justify-center text-rose-200 text-xs font-cinzel font-bold shadow-md">
                                 ✦
                             </div>
                             <span class="font-cinzel text-xs tracking-widest text-amber-200/90 uppercase">Surat Untuk Sahabat Terbaik</span>
                         </div>
-
-                        <!-- Audio Voice Button -->
-                        <button onclick="readWishWithTTS()" id="ttsBtn" class="flex items-center space-x-2 bg-rose-950/80 hover:bg-rose-900 border border-rose-800/70 text-rose-200 px-3 py-1.5 rounded-full text-xs font-sans-clean transition duration-300 shadow-md">
-                            <i id="ttsIcon" class="fa-solid fa-volume-high text-rose-300"></i>
-                            <span id="ttsText">Dengarkan Ucapan Suara 🔊</span>
-                        </button>
                     </div>
 
                     <!-- Heartfelt Friendship Message Body -->
@@ -260,9 +256,7 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </section>
 
@@ -312,8 +306,8 @@
         </div>
     </div>
 
-    <!-- Custom Notification Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-stone-900 border border-amber-700/80 text-amber-100 px-4 py-3 rounded-xl shadow-2xl text-xs font-sans-clean hidden transition duration-300"></div>
+    <!-- Custom Notification Toast Message -->
+    <div id="toastMessage" class="fixed top-20 right-6 z-50 bg-stone-900/95 border border-amber-700/80 text-amber-100 px-4 py-3 rounded-xl shadow-2xl text-xs font-sans-clean hidden transition duration-300 max-w-xs"></div>
 
     <!-- Bottom Ribbon Footer -->
     <footer class="stitched-ribbon py-4 px-4 text-center text-xs font-cinzel text-stone-400 relative z-20 mt-12">
@@ -323,53 +317,42 @@
 
     <script>
         /* ===================================================
-           1. Control Play/Pause Audio Musik Real (music.mp3)
+           Audio Controller with Robust Loading & Toggle States
            =================================================== */
-        function toggleAudio() {
-            const music = document.getElementById('bgMusic');
-            const btnText = document.getElementById('audioStatusText');
-            const icon = document.getElementById('audioIcon');
+        const music = document.getElementById('bgMusic');
 
-            if (music.paused) {
-                music.play().then(() => {
-                    btnText.innerText = 'Hentikan Musik';
-                    icon.className = 'fa-solid fa-pause text-rose-300 text-xs';
-                }).catch(error => {
-                    console.log('Autoplay ditolak atau file tidak ditemukan:', error);
-                });
-            } else {
-                music.pause();
-                btnText.innerText = 'Putar Musik';
-                icon.className = 'fa-solid fa-music text-rose-300 animate-pulse text-xs';
+        function showToast(msg) {
+            const toast = document.getElementById('toastMessage');
+            if (toast) {
+                toast.innerText = msg;
+                toast.classList.remove('hidden');
+                setTimeout(() => toast.classList.add('hidden'), 4000);
             }
         }
 
-        /* ===================================================
-           2. Modal Pop-Up Functions
-           =================================================== */
-        function openPhotoModal(imgSrc, caption) {
-            const modal = document.getElementById('photoModal');
-            document.getElementById('modalImg').src = imgSrc;
-            document.getElementById('modalCaption').innerText = caption;
-            modal.classList.remove('hidden');
-        }
+        // Synchronize Header UI Controls
+        function updateAudioUI(state) {
+            const headerLabels = document.querySelectorAll('.headerAudioLabel');
+            const headerIcons = document.querySelectorAll('.headerAudioIcon');
+            const headerPills = document.querySelectorAll('.headerTogglePill');
 
-        function closePhotoModal() {
-            document.getElementById('photoModal').classList.add('hidden');
-        }
-
-        /* ===================================================
-           3. Confetti & Text-to-Speech Interactivity
-           =================================================== */
-        function triggerCelebration() {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-        }
-
-        function readWishWithTTS() {
-            if ('speechSynthesis' in window) {
-                const text = "Selamat Ulang Tahun, Sahabatku! Di hari bertambahnya usiamu ini, aku cuma mau bilang betapa bersyukurnya aku punya sahabat sejati sepertimu. Semangat terus ya besti, jangan lupain aku walaupun kita udah beda sekolah, semoga panjang umur ya! I miss u bestiku.";
-                const utterance
+            if (state === 'playing') {
+                headerLabels.forEach(el => el.innerText = 'Jeda Musik');
+                headerIcons.forEach(el => el.className = 'headerAudioIcon fa-solid fa-power-off text-emerald-400 text-xs');
+                headerPills.forEach(el => {
+                    el.innerText = 'ON';
+                    el.className = 'headerTogglePill font-bold text-[10px] uppercase px-2 py-0.5 rounded-full bg-emerald-950/90 text-emerald-300 border border-emerald-700/80 animate-pulse';
+                });
+            } else if (state === 'loading') {
+                headerLabels.forEach(el => el.innerText = 'Memuat...');
+                headerIcons.forEach(el => el.className = 'headerAudioIcon fa-solid fa-spinner animate-spin text-amber-300 text-xs');
+                headerPills.forEach(el => {
+                    el.innerText = 'LOAD';
+                    el.className = 'headerTogglePill font-bold text-[10px] uppercase px-2 py-0.5 rounded-full bg-amber-950/80 text-amber-300 border border-amber-800/80';
+                });
+            } else { // 'paused' / 'off'
+                headerLabels.forEach(el => el.innerText = 'Putar Musik');
+                headerIcons.forEach(el => el.className = 'headerAudioIcon fa-solid fa-power-off text-rose-500 text-xs');
+                headerPills.forEach(el => {
+                    el.innerText = 'OFF';
+                    el.className = 'headerTogglePill font-bold tex

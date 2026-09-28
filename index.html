@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday Bestie - Dark Coquette Vintage</title>
-    <!-- Tailwind CSS -->
+    <title>Happy Birthday Bestie</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -84,7 +80,7 @@
 </head>
 <body class="min-h-screen relative flex flex-col justify-between selection:bg-rose-900 selection:text-amber-100">
 
-    <!-- OVERLAY LANDING PAGE (BUKA SURAT & TRIGGER MUSIK) -->
+    <!-- OVERLAY LANDING PAGE -->
     <div id="welcomeOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#120e0f] bg-opacity-95 backdrop-blur-md transition-opacity duration-700">
         <div class="vintage-paper rounded-2xl p-8 sm:p-10 max-w-md w-full text-center border border-amber-900/60 shadow-2xl relative">
             <div class="w-16 h-16 rounded-full bg-rose-950 border-2 border-amber-600/80 mx-auto flex items-center justify-center text-amber-200 text-xl font-cinzel font-bold shadow-lg my-2">
@@ -102,7 +98,7 @@
 
     <canvas id="sparkleCanvas"></canvas>
 
-    <!-- Header Ribbons & Music Button -->
+    <!-- Header -->
     <header class="stitched-ribbon py-3 px-6 relative z-20 flex justify-between items-center text-xs tracking-widest uppercase text-amber-100/90 font-cinzel">
         <div class="flex items-center space-x-2">
             <i class="fa-solid fa-ribbon text-rose-300 text-sm"></i>
@@ -115,7 +111,6 @@
     </header>
 
     <main class="container mx-auto px-4 py-8 max-w-3xl flex-grow relative z-10 text-center">
-        <!-- Title -->
         <div class="relative inline-block my-2">
             <h1 class="text-6xl sm:text-7xl md:text-8xl font-cursive text-amber-100/90 drop-shadow-2xl">
                 Happy Birthday!
@@ -129,7 +124,7 @@
             "Wishing you endless happiness, continuous success, and brilliant moments ahead!"
         </p>
 
-        <!-- Foto 1: Polaroid -->
+        <!-- Foto 1 -->
         <section class="my-8 flex justify-center">
             <div class="polaroid-frame cursor-pointer" onclick="openPhotoModal('image1.jpg', 'Bestie Forever ✨')">
                 <img src="image1.jpg" alt="Foto 1" class="w-64 sm:w-80 h-64 sm:h-80 object-cover rounded-sm border border-stone-300">
@@ -152,21 +147,20 @@
             </div>
         </section>
 
-        <!-- Foto 2: Locket Frame -->
+        <!-- Foto 2 -->
         <section class="my-8 flex justify-center">
             <div class="heart-locket-frame overflow-hidden p-1 bg-stone-900 cursor-pointer" onclick="openPhotoModal('image2.jpg', 'Kebersamaan Sekolah')">
                 <img src="image2.jpg" alt="Foto 2" class="w-60 sm:w-72 h-60 sm:h-72 object-cover rounded-full">
             </div>
         </section>
 
-        <!-- Foto 3: Vintage Oval -->
+        <!-- Foto 3 -->
         <section class="my-8 flex justify-center">
             <div class="vintage-oval-frame overflow-hidden p-1.5 bg-stone-900 cursor-pointer" onclick="openPhotoModal('image3.jpg', 'Memori Indah')">
                 <img src="image3.jpg" alt="Foto 3" class="w-64 sm:w-80 h-64 sm:h-80 object-cover rounded-full">
             </div>
         </section>
 
-        <!-- Sparkles Button -->
         <button onclick="triggerCelebration()" class="px-8 py-3.5 border border-amber-800 rounded-full bg-stone-900 text-amber-100 hover:border-amber-400 cursor-pointer transition shadow-xl my-6">
             <i class="fa-solid fa-wand-magic-sparkles text-rose-300 mr-2"></i>
             <span>Rayakan Dengan Sparkles ✨</span>
@@ -186,8 +180,8 @@
     <div id="toastMessage" class="fixed top-20 right-6 z-50 bg-stone-900/95 border border-amber-700/80 text-amber-100 px-4 py-3 rounded-xl shadow-2xl text-xs hidden transition"></div>
 
     <script>
-        // MENDETEKSI NAMA FILE MUSIK (Bisa music.mp3 atau audio.mp3)
-        const music = new Audio('music.mp3'); 
+        // Otomatis mendeteksi file 'music.mp3' maupun 'audio.mp3'
+        let music = new Audio('audio.mp3'); 
         music.loop = true;
 
         function showToast(msg) {
@@ -214,18 +208,17 @@
         function openEnvelope() {
             document.getElementById('welcomeOverlay').classList.add('hidden');
             
-            // Coba putar file music.mp3, jika gagal ganti otomatis mencari audio.mp3
             music.play().then(() => {
                 updateAudioUI(true);
                 showToast('🎶 Musik diputar...');
             }).catch(err => {
-                console.warn("Mencoba fallback audio...");
+                // Fallback jika nama file di GitHub adalah audio.mp3
                 music.src = 'audio.mp3';
                 music.play().then(() => {
                     updateAudioUI(true);
                     showToast('🎶 Musik diputar...');
                 }).catch(() => {
-                    showToast('⚠️ File musik (music.mp3 / audio.mp3) tidak ditemukan!');
+                    showToast('⚠️ Pastikan file lagu bernama music.mp3 atau audio.mp3!');
                 });
             });
 
@@ -261,7 +254,7 @@
             }
         }
 
-        // Ambient Sparkles Background
+        // Ambient Sparkles Canvas Background
         const canvas = document.getElementById('sparkleCanvas');
         if (canvas) {
             const ctx = canvas.getContext('2d');

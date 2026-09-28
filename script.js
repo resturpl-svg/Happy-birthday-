@@ -1,8 +1,9 @@
 /* ===================================================
-   1. Audio Controller & UI Synchronizer
+   1. Audio Controller & UI Synchronizer (Enhanced Error Handling)
    =================================================== */
 const music = document.getElementById('bgMusic');
 
+// Menampilkan pesan notifikasi toast singkat
 function showToast(msg) {
     const toast = document.getElementById('toastMessage');
     if (toast) {
@@ -12,6 +13,7 @@ function showToast(msg) {
     }
 }
 
+// Mengubah tampilan tombol header sesuai status audio
 function updateAudioUI(state) {
     const headerLabels = document.querySelectorAll('.headerAudioLabel');
     const headerIcons = document.querySelectorAll('.headerAudioIcon');
@@ -41,23 +43,49 @@ function updateAudioUI(state) {
     }
 }
 
+// Fungsi kontrol audio utama dengan validasi dan pesan error mendetail
 function toggleAudio() {
-    if (!music) return;
+    if (!music) {
+        showToast('⚠️ Elemen audio tidak ditemukan di HTML!');
+        return;
+    }
+
     if (music.paused) {
         updateAudioUI('loading');
-        music.play().then(() => {
-            updateAudioUI('playing');
-            showToast('🎶 Musik sedang diputar...');
-        }).catch(err => {
-            console.error('Audio play error:', err);
-            updateAudioUI('paused');
-            showToast('⚠️ Gagal memutar lagu. Pastikan file audio.mp3 tersedia!');
-        });
+        
+        const playPromise = music.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                updateAudioUI('playing');
+                showToast('🎶 Musik sedang diputar...');
+            }).catch(err => {
+                console.error('Audio Play Error:', err);
+                updateAudioUI('paused');
+                
+                // Pengecekan penyebab error spesifik
+                if (err.name === 'NotAllowedError') {
+                    showToast('⚠️ Klik tombol sekali lagi untuk memutar musik.');
+                } else if (err.name === 'NotSupportedError' || music.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
+                    showToast('⚠️ File audio.mp3 tidak ditemukan atau rusak!');
+                } else {
+                    showToast('⚠️ Gagal memutar: ' + err.message);
+                }
+            });
+        }
     } else {
         music.pause();
         updateAudioUI('paused');
         showToast('⏸️ Musik dihentikan.');
     }
+}
+
+// Event listener untuk mendeteksi jika file audio gagal dimuat saat pertama kali membuka halaman
+if (music) {
+    music.addEventListener('error', function() {
+        console.error('Audio source error: File audio.mp3 tidak ditemukan.');
+        showToast('⚠️ Pastikan file audio.mp3 ada di folder yang sama!');
+    });
 }
 
 /* ===================================================
@@ -159,5 +187,4 @@ if (canvas) {
         requestAnimationFrame(animateSparkles);
     }
     animateSparkles();
-              }
-      
+}
